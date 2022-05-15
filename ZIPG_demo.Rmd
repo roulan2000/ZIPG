@@ -43,15 +43,15 @@ W : Observed taxa count.
 
 M : Sequencing depth.
 
-X, X\_star : Covariats of interesting.
+X, X\_star : Covariates of interesting.
 
 **Output list:**
 
 ZIPG_res\$init : pscl results, used as initialization.
 
-ZIPG_res\$res : ZIPG output evaluate at last EM iteration.
+ZIPG_res\$res : ZIPG output evaluated at last EM iteration.
 
-  ZIPG_res\$res\$par : ZIPG estimation $(\beta,\beta^*,\gamma)$.
+  ZIPG_res\$res\$par : ZIPG estimation for $\Omega = (\beta,\beta^*,\gamma)$.
   
 ZIPG_res\$wald_test : ZIPG Wald test
 
