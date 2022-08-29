@@ -56,21 +56,21 @@ Use function `ZIPG_main()` to run our ZIPG model.
 
 `M` : Sequencing depth, ZIPG use log(M) as offset by default.
 
-`X`, `X\_star` : Covariates of interesting of differential abundance and
+`X`, `X_star` : Covariates of interesting of differential abundance and
 differential varibility, input as formula.
 
 **Output list:**
 
-`ZIPG_res\$init` : pscl results, used as initialization.
+`ZIPG_res$init` : pscl results, used as initialization.
 
-`ZIPG_res\$res` : ZIPG output evaluated at last EM iteration.
+`ZIPG_res$res` : ZIPG output evaluated at last EM iteration.
 
-`ZIPG_res\$res\$par` : ZIPG estimation for
+`ZIPG_res$res$par` : ZIPG estimation for
 $\Omega = (\beta,\beta^*,\gamma)$.
 
-`ZIPG_res\$wald_test` : ZIPG Wald test
+`ZIPG_res$wald_test` : ZIPG Wald test
 
-`ZIPG_res\$logli` : ZIPG log-likelihood
+`ZIPG_res$logli` : ZIPG log-likelihood
 
 ``` r
 ZIPG_res <- ZIPG_main(data = dat$COV,
@@ -91,7 +91,7 @@ summary_ZIPG(ZIPG_res)
 ## ZIPG bWald
 
 Set the bootstrap replicates `B` in `bWald_list` to conduct ZIPG-bWald,
-results and covariance matrix can be find in `ZIPG_res\$bWald`.
+results and covariance matrix can be find in `ZIPG_res$bWald`.
 
 ``` r
 # Set bootstrap replicates B
@@ -106,14 +106,14 @@ ZIPG_res1 = ZIPG_main(
 #> Finish
 summary_ZIPG(ZIPG_res1,type = 'bWald')
 #>           ZIPG bWald   
-#>        Estimation     SE     pval    
-#> beta0      -7.371 0.1837 0.00e+00 ***
-#> beta1       0.121 0.2378 6.09e-01    
-#> beta2       0.106 0.0200 1.07e-07 ***
-#> beta3      -0.118 0.0347 7.01e-04 ***
-#> beta0*      0.525 0.1301 5.44e-05 ***
-#> beta1*      0.606 0.1608 1.65e-04 ***
-#> gamma      -2.080 0.2676 7.67e-15 ***
+#>        Estimation     SE      pval    
+#> beta0      -7.371 0.1966 1.13e-307 ***
+#> beta1       0.121 0.2438  6.18e-01    
+#> beta2       0.106 0.0213  5.45e-07 ***
+#> beta3      -0.118 0.0376  1.75e-03  **
+#> beta0*      0.525 0.1259  3.03e-05 ***
+#> beta1*      0.606 0.1745  5.16e-04 ***
+#> gamma      -2.080 0.4488  3.58e-06 ***
 ```
 
 To test more complicated hypothesis, you may use the covariance matirx
@@ -122,13 +122,13 @@ driven from bootstrap.
 ``` r
 round(ZIPG_res1$bWald$vcov,3)
 #>        [,1]   [,2]   [,3]   [,4]   [,5]   [,6]   [,7]
-#> [1,]  0.034 -0.039  0.001  0.004  0.007 -0.013  0.010
-#> [2,] -0.039  0.057 -0.002 -0.005 -0.009  0.012 -0.005
-#> [3,]  0.001 -0.002  0.000  0.000  0.001  0.000  0.000
-#> [4,]  0.004 -0.005  0.000  0.001  0.001 -0.002  0.003
-#> [5,]  0.007 -0.009  0.001  0.001  0.017 -0.014 -0.011
-#> [6,] -0.013  0.012  0.000 -0.002 -0.014  0.026 -0.014
-#> [7,]  0.010 -0.005  0.000  0.003 -0.011 -0.014  0.072
+#> [1,]  0.039 -0.043  0.002  0.005  0.012 -0.015 -0.005
+#> [2,] -0.043  0.059 -0.003 -0.005 -0.017  0.015  0.017
+#> [3,]  0.002 -0.003  0.000  0.000  0.001 -0.001 -0.001
+#> [4,]  0.005 -0.005  0.000  0.001  0.002 -0.003  0.000
+#> [5,]  0.012 -0.017  0.001  0.002  0.016 -0.015 -0.008
+#> [6,] -0.015  0.015 -0.001 -0.003 -0.015  0.030 -0.030
+#> [7,] -0.005  0.017 -0.001  0.000 -0.008 -0.030  0.201
 ```
 
 ## ZIPG pbWald

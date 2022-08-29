@@ -62,19 +62,19 @@ Use function `ZIPG_main()` to run our ZIPG model.
 
 `M` : Sequencing depth, ZIPG use log(M) as offset by default.
 
-`X`, `X\_star` : Covariates of interesting of differential abundance and differential varibility, input as formula.
+`X`, `X_star` : Covariates of interesting of differential abundance and differential varibility, input as formula.
 
 **Output list:**
 
-`ZIPG_res\$init` : pscl results, used as initialization.
+`ZIPG_res$init` : pscl results, used as initialization.
 
-`ZIPG_res\$res` : ZIPG output evaluated at last EM iteration.
+`ZIPG_res$res` : ZIPG output evaluated at last EM iteration.
 
-`ZIPG_res\$res\$par` : ZIPG estimation for $\Omega = (\beta,\beta^*,\gamma)$.
+`ZIPG_res$res$par` : ZIPG estimation for $\Omega = (\beta,\beta^*,\gamma)$.
   
-`ZIPG_res\$wald_test` : ZIPG Wald test
+`ZIPG_res$wald_test` : ZIPG Wald test
 
-`ZIPG_res\$logli` : ZIPG log-likelihood
+`ZIPG_res$logli` : ZIPG log-likelihood
 
 ```{r}
 ZIPG_res <- ZIPG_main(data = dat$COV,
@@ -85,7 +85,7 @@ summary_ZIPG(ZIPG_res)
 
 ## ZIPG bWald
 
-Set the bootstrap replicates `B` in `bWald_list` to conduct ZIPG-bWald, results and covariance matrix can be find in `ZIPG_res\$bWald`. 
+Set the bootstrap replicates `B` in `bWald_list` to conduct ZIPG-bWald, results and covariance matrix can be find in `ZIPG_res$bWald`. 
 
 ```{r}
 # Set bootstrap replicates B
