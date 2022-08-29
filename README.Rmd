@@ -32,7 +32,7 @@ devtools::install_github("roulan2000/ZIPG")
 
 ### Load Data
 
-Complete Dietary data can be find in "Daily sampling reveals personalized diet-microbiome associations in humans." (Johnson et al. 2019)
+Load dietary data. Complete Dietary data can be found in "Daily sampling reveals personalized diet-microbiome associations in humans." (Johnson et al. 2019)
 
 ```{r}
 library(ZIPG)

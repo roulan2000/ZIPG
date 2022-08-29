@@ -21,9 +21,9 @@ devtools::install_github("roulan2000/ZIPG")
 
 ### Load Data
 
-Complete Dietary data can be find in “Daily sampling reveals
-personalized diet-microbiome associations in humans.” (Johnson et
-al. 2019)
+Load dietary data. Complete Dietary data can be found in “Daily sampling
+reveals personalized diet-microbiome associations in humans.” (Johnson
+et al. 2019)
 
 ``` r
 library(ZIPG)
@@ -106,24 +106,24 @@ ZIPG_res1 = ZIPG_main(
 #> Finish
 res = ZIPG_summary(ZIPG_res1,type = 'bWald')
 #>           ZIPG bWald   
-#>        Estimation     SE      pval    
-#> beta0      -7.371 0.1919 1.24e-322 ***
-#> beta1       0.121 0.2293  5.96e-01    
-#> beta2       0.106 0.0219  1.15e-06 ***
-#> beta3      -0.118 0.0378  1.87e-03  **
-#> beta0*      0.525 0.1281  4.15e-05 ***
-#> beta1*      0.606 0.1619  1.83e-04 ***
-#> gamma      -2.080 0.3269  1.99e-10 ***
+#>        Estimation     SE     pval    
+#> beta0      -7.371 0.1757 0.00e+00 ***
+#> beta1       0.121 0.2170 5.76e-01    
+#> beta2       0.106 0.0186 9.77e-09 ***
+#> beta3      -0.118 0.0308 1.36e-04 ***
+#> beta0*      0.525 0.1440 2.68e-04 ***
+#> beta1*      0.606 0.1847 1.04e-03  **
+#> gamma      -2.080 0.3168 5.23e-11 ***
 res = ZIPG_CI(ZIPG_res1,type='bWald',alpha = 0.05)
 #>         ZIPG Wald Confidence interval 
 #>        Estimation      lb      ub
-#> beta0      -7.371 -7.7468 -6.9944
-#> beta1       0.121 -0.3279  0.5709
-#> beta2       0.106  0.0636  0.1494
-#> beta3      -0.118 -0.1917 -0.0435
-#> beta0*      0.525  0.2739  0.7760
-#> beta1*      0.606  0.2886  0.9233
-#> gamma      -2.080 -2.7206 -1.4391
+#> beta0      -7.371 -7.7150 -7.0262
+#> beta1       0.121 -0.3038  0.5468
+#> beta2       0.106  0.0701  0.1428
+#> beta3      -0.118 -0.1780 -0.0572
+#> beta0*      0.525  0.2427  0.8073
+#> beta1*      0.606  0.2439  0.9680
+#> gamma      -2.080 -2.7009 -1.4588
 ```
 
 To test more complicated hypothesis, you may use the covariance matirx
@@ -132,13 +132,13 @@ driven from bootstrap.
 ``` r
 round(ZIPG_res1$bWald$vcov,3)
 #>        [,1]   [,2]   [,3]   [,4]   [,5]   [,6]   [,7]
-#> [1,]  0.037 -0.039  0.002  0.004  0.006 -0.008  0.013
-#> [2,] -0.039  0.053 -0.002 -0.005 -0.006  0.007 -0.006
-#> [3,]  0.002 -0.002  0.000  0.000  0.000  0.000 -0.001
-#> [4,]  0.004 -0.005  0.000  0.001  0.002 -0.003  0.003
-#> [5,]  0.006 -0.006  0.000  0.002  0.016 -0.014 -0.009
-#> [6,] -0.008  0.007  0.000 -0.003 -0.014  0.026 -0.020
-#> [7,]  0.013 -0.006 -0.001  0.003 -0.009 -0.020  0.107
+#> [1,]  0.031 -0.033  0.001  0.003  0.009 -0.008  0.006
+#> [2,] -0.033  0.047 -0.001 -0.003 -0.010  0.006  0.003
+#> [3,]  0.001 -0.001  0.000  0.000  0.000  0.000  0.000
+#> [4,]  0.003 -0.003  0.000  0.001  0.002 -0.002  0.001
+#> [5,]  0.009 -0.010  0.000  0.002  0.021 -0.020 -0.009
+#> [6,] -0.008  0.006  0.000 -0.002 -0.020  0.034 -0.016
+#> [7,]  0.006  0.003  0.000  0.001 -0.009 -0.016  0.100
 ```
 
 ## ZIPG pbWald
