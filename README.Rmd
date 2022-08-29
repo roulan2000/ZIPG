@@ -97,7 +97,7 @@ ZIPG_res1 = ZIPG_main(
   W = W, M = M,
   bWald_list = bWald_list)
 res = ZIPG_summary(ZIPG_res1,type = 'bWald')
-res = ZIPG_CI(ZIPG_res1)
+res = ZIPG_CI(ZIPG_res1,type='bWald',alpha = 0.05)
 ```
 
 To test more complicated hypothesis, you may use the covariance matirx driven from bootstrap.
