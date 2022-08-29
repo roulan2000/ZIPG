@@ -1,19 +1,5 @@
 #' ZIPG EM algorithm to optimize log-likelihood
 #'
-#' @param W
-#' @param M
-#' @param X
-#' @param X_star
-#' @param A
-#' @param d
-#' @param d_star
-#' @param parms
-#' @param optim_method
-#' @param fix_index
-#' @param tol
-#' @param maxit
-#'
-#' @return
 ZIPG_optim_EM <- function(W,M,X,X_star,
                         A=1,d,d_star,
                         parms,optim_method ='BFGS',

@@ -19,9 +19,6 @@ ZIPG_optim_EM(
   maxit = 200
 )
 }
-\arguments{
-\item{maxit}{}
-}
 \description{
 ZIPG EM algorithm to optimize log-likelihood
 }
