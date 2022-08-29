@@ -723,7 +723,7 @@ pwald <- function(res,test_index)
 #' hist(W_sim$W_list[[1]])
 #' ZIPG_res <- ZIPG_main(data = data.frame(X1 = sim_pre,X2 = sim_PC1),
 #' X = ~X1+X2, X_star = ~ X1,W = W_sim$W_list[[2]], M = sim_M )
-#' summary_ZIPG(ZIPG_res)
+#' ZIPG_summary(ZIPG_res)
 ZIPG_simulate <- function(M,X,X_star,
                         A=1,d,d_star,
                         parms,N,
@@ -939,7 +939,7 @@ pval_getpval<- function(object){
 #' B for bootstrap sample size, X0 and X_star0 for formula of covariates included in H0
 #' @param bWald_list A list of arguments for non-parameteric bootstrap Wald test, B for bootstrap sample size,
 #'
-#' @return A list of ZIPG fitted model. Use summary_ZIPG() for a quick look at the results.
+#' @return A list of ZIPG fitted model. Use ZIPG_summary() for a quick look at the results.
 #' @export
 #'
 #' @examples
@@ -948,7 +948,7 @@ pval_getpval<- function(object){
 #' ZIPG_res <- ZIPG_main(data = dat$COV,
 #' X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
 #' W = dat$OTU[,100], M = dat$M )
-#' summary_ZIPG(ZIPG_res)
+#' ZIPG_summary(ZIPG_res)
 ZIPG_main <- function(data,W,M,X,X_star,
                       return_model = T, pbWald_list = NULL,bWald_list = NULL){
   EM = TRUE
@@ -1122,7 +1122,7 @@ ZIPG_main <- function(data,W,M,X,X_star,
 
 #' Summary for ZIPG_main() result.
 #'
-#' @param ZIPG_res Result from ZIPG_main
+#' @param ZIPG_res Result from ZIPG_main()
 #' @param type Type of hypothesis testing method, 'Wald','bWald' or 'pbWald'.
 #'
 #' @return
@@ -1134,8 +1134,8 @@ ZIPG_main <- function(data,W,M,X,X_star,
 #' ZIPG_res <- ZIPG_main(data = dat$COV,
 #' X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
 #' W = dat$OTU[,100], M = dat$M )
-#' summary_ZIPG(ZIPG_res)
-summary_ZIPG<-function(ZIPG_res,type='Wald'){
+#' ZIPG_summary(ZIPG_res)
+ZIPG_summary<-function(ZIPG_res,type='Wald'){
   d = ZIPG_res$info$d
   d_star = ZIPG_res$info$d_star
   n_parms = length(ZIPG_res$res$par)
@@ -1153,6 +1153,7 @@ summary_ZIPG<-function(ZIPG_res,type='Wald'){
                          'gamma')
 
   print(Wald_mat,digits = 3)
+  return(Wald_mat)
   }else if(type =='bWald'){
     star1=as.character(symnum(ZIPG_res$bWald$pval,
                               cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
@@ -1167,6 +1168,7 @@ summary_ZIPG<-function(ZIPG_res,type='Wald'){
                            'gamma')
 
     print(Wald_mat,digits = 3)
+    return(Wald_mat)
   }else if(type =='pbWald'){
     H0_index = ZIPG_res$pbWald$H0_index
     parnames = c(paste('beta', c(0:d),sep = ''),
@@ -1174,5 +1176,96 @@ summary_ZIPG<-function(ZIPG_res,type='Wald'){
                  'gamma')
     cat('   ZIPG pbWald \n H0:',parnames[H0_index],'= 0 \n')
     cat(' pvalue = ', signif(ZIPG_res$pbWald$pval_pbWald,3),'\n')
+    return(ZIPG_res$pbWald$pval_pbWald)
+  } else {
+    stop("Type must be one of 'Wald', 'bWald' or 'pbWald' ! ")
   }
 }
+
+#' Get confidence interval from ZIPG model
+#'
+#' @param ZIPG_res Result from ZIPG_main()
+#' @param type Type of hypothesis testing method, 'Wald' or 'bWald'.
+#' @param CI_type Type of confidence interval, 'Wald','bWald' or 'pbWald'.
+#' @param alpha We construct (1- alpha)% confidence interval by alpha/2 and (1-alpha/2).
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(Dietary)
+#' dat = Dietary
+#' ZIPG_res <- ZIPG_main(data = dat$COV,
+#' X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
+#' W = dat$OTU[,100], M = dat$M )
+#' ZIPG_CI(ZIPG_res)
+ZIPG_CI<-function(ZIPG_res,type='Wald',CI_type = 'normal',alpha = 0.05){
+  d = ZIPG_res$info$d
+  d_star = ZIPG_res$info$d_star
+  n_parms = length(ZIPG_res$res$par)
+  if(type =='Wald'){
+    lb = qnorm(alpha/2)
+    ub = qnorm(1-alpha/2)
+
+    CI_mat = data.frame(
+      ZIPG_res$res$par,
+      lb = ZIPG_res$res$par + lb*ZIPG_res$wald_test$SE,
+      ub = ZIPG_res$res$par + ub*ZIPG_res$wald_test$SE
+    )
+
+    cat('        ZIPG Wald Confidence interval \n')
+    colnames(CI_mat)<- c('Estimation','lb','ub')
+    rownames(CI_mat) = c(paste('beta', c(0:d),sep = ''),
+                           paste('beta', c(0:d_star),'*',sep = ''),
+                           'gamma')
+    print(CI_mat,digits = 3)
+    return(CI_mat)
+  }else if(type =='bWald'){
+    if(CI_type =='normal'){
+      lb = qnorm(alpha/2)
+      ub = qnorm(1-alpha/2)
+
+      CI_mat = data.frame(
+        ZIPG_res$res$par,
+        lb = ZIPG_res$res$par + lb*ZIPG_res$bWald$SE,
+        ub = ZIPG_res$res$par + ub*ZIPG_res$bWald$SE
+      )
+
+      cat('        ZIPG Wald Confidence interval \n')
+      colnames(CI_mat)<- c('Estimation','lb','ub')
+      rownames(CI_mat) = c(paste('beta', c(0:d),sep = ''),
+                           paste('beta', c(0:d_star),'*',sep = ''),
+                           'gamma')
+      print(CI_mat,digits = 3)
+      return(CI_mat)
+    }else if (CI_type =='percentile'){
+      warning('Normality-based CI or BCa method are more recommended !')
+        ub = c()
+        lb = c()
+      for(index in 1:length(ZIPG_res$res$par)){
+        sortb = sort(ZIPG_res$bWald$par_b[,index])
+        B = length(sortb)
+        ub[index] = sortb[ B*(1-alpha/2)]
+        lb[index] = sortb[B*alpha/2+1]
+      }
+        CI_mat = data.frame(
+          ZIPG_res$res$par,
+          lb = lb,
+          ub = ub
+        )
+
+        cat('        ZIPG Wald percentlile Confidence interval \n')
+        colnames(CI_mat)<- c('Estimation','lb','ub')
+        rownames(CI_mat) = c(paste('beta', c(0:d),sep = ''),
+                             paste('beta', c(0:d_star),'*',sep = ''),
+                             'gamma')
+        print(CI_mat,digits = 3)
+        return(CI_mat)
+    }else{
+      stop("Type must be one of 'normal' or 'percentile'! ")
+    }
+  } else {
+    stop("Type must be one of 'Wald' or 'bWald'! ")
+  }
+}
+

@@ -58,5 +58,5 @@ W_sim <- ZIPG_simulate(M = sim_M,X=X,X_star=X,d=2,d_star=2,parms = parms,N=100)
 hist(W_sim$W_list[[1]])
 ZIPG_res <- ZIPG_main(data = data.frame(X1 = sim_pre,X2 = sim_PC1),
 X = ~X1+X2, X_star = ~ X1,W = W_sim$W_list[[2]], M = sim_M )
-summary_ZIPG(ZIPG_res)
+ZIPG_summary(ZIPG_res)
 }

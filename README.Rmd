@@ -80,7 +80,7 @@ Use function `ZIPG_main()` to run our ZIPG model.
 ZIPG_res <- ZIPG_main(data = dat$COV,
                       X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
                       W = W, M = M)
-summary_ZIPG(ZIPG_res)
+res = ZIPG_summary(ZIPG_res)
 ```
 
 ## ZIPG bWald
@@ -96,7 +96,8 @@ ZIPG_res1 = ZIPG_main(
   X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
   W = W, M = M,
   bWald_list = bWald_list)
-summary_ZIPG(ZIPG_res1,type = 'bWald')
+res = ZIPG_summary(ZIPG_res1,type = 'bWald')
+res = ZIPG_CI(ZIPG_res1)
 ```
 
 To test more complicated hypothesis, you may use the covariance matirx driven from bootstrap.
@@ -124,5 +125,5 @@ ZIPG_res2 = ZIPG_main(
   W = W, M = M,
   pbWald_list= pbWald_list)
 
-summary_ZIPG(ZIPG_res2,type ='pbWald')
+res = ZIPG_summary(ZIPG_res2,type ='pbWald')
 ```

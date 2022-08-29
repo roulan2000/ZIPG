@@ -76,7 +76,7 @@ $\Omega = (\beta,\beta^*,\gamma)$.
 ZIPG_res <- ZIPG_main(data = dat$COV,
                       X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
                       W = W, M = M)
-summary_ZIPG(ZIPG_res)
+res = ZIPG_summary(ZIPG_res)
 #>           ZIPG Wald  
 #>        Estimation     SE     pval    
 #> beta0      -7.371 0.1512 0.00e+00 ***
@@ -104,16 +104,26 @@ ZIPG_res1 = ZIPG_main(
   bWald_list = bWald_list)
 #> Running non-parametric bootstrap wald test 
 #> Finish
-summary_ZIPG(ZIPG_res1,type = 'bWald')
+res = ZIPG_summary(ZIPG_res1,type = 'bWald')
 #>           ZIPG bWald   
 #>        Estimation     SE      pval    
-#> beta0      -7.371 0.1966 1.13e-307 ***
-#> beta1       0.121 0.2438  6.18e-01    
-#> beta2       0.106 0.0213  5.45e-07 ***
-#> beta3      -0.118 0.0376  1.75e-03  **
-#> beta0*      0.525 0.1259  3.03e-05 ***
-#> beta1*      0.606 0.1745  5.16e-04 ***
-#> gamma      -2.080 0.4488  3.58e-06 ***
+#> beta0      -7.371 0.2090 1.99e-272 ***
+#> beta1       0.121 0.2412  6.14e-01    
+#> beta2       0.106 0.0234  5.16e-06 ***
+#> beta3      -0.118 0.0355  9.32e-04 ***
+#> beta0*      0.525 0.1322  7.13e-05 ***
+#> beta1*      0.606 0.1539  8.28e-05 ***
+#> gamma      -2.080 0.3330  4.21e-10 ***
+res = ZIPG_CI(ZIPG_res1)
+#>         ZIPG Wald Confidence interval 
+#>        Estimation      lb      ub
+#> beta0      -7.371 -7.6669 -7.0743
+#> beta1       0.121 -0.2676  0.5106
+#> beta2       0.106  0.0697  0.1432
+#> beta3      -0.118 -0.1738 -0.0614
+#> beta0*      0.525  0.2899  0.7600
+#> beta1*      0.606  0.3304  0.8815
+#> gamma      -2.080 -2.3661 -1.7937
 ```
 
 To test more complicated hypothesis, you may use the covariance matirx
@@ -122,13 +132,13 @@ driven from bootstrap.
 ``` r
 round(ZIPG_res1$bWald$vcov,3)
 #>        [,1]   [,2]   [,3]   [,4]   [,5]   [,6]   [,7]
-#> [1,]  0.039 -0.043  0.002  0.005  0.012 -0.015 -0.005
-#> [2,] -0.043  0.059 -0.003 -0.005 -0.017  0.015  0.017
-#> [3,]  0.002 -0.003  0.000  0.000  0.001 -0.001 -0.001
-#> [4,]  0.005 -0.005  0.000  0.001  0.002 -0.003  0.000
-#> [5,]  0.012 -0.017  0.001  0.002  0.016 -0.015 -0.008
-#> [6,] -0.015  0.015 -0.001 -0.003 -0.015  0.030 -0.030
-#> [7,] -0.005  0.017 -0.001  0.000 -0.008 -0.030  0.201
+#> [1,]  0.044 -0.045  0.002  0.004  0.015 -0.018  0.004
+#> [2,] -0.045  0.058 -0.003 -0.005 -0.018  0.019  0.005
+#> [3,]  0.002 -0.003  0.001  0.000  0.001 -0.001  0.000
+#> [4,]  0.004 -0.005  0.000  0.001  0.001 -0.002  0.002
+#> [5,]  0.015 -0.018  0.001  0.001  0.017 -0.013 -0.011
+#> [6,] -0.018  0.019 -0.001 -0.002 -0.013  0.024 -0.018
+#> [7,]  0.004  0.005  0.000  0.002 -0.011 -0.018  0.111
 ```
 
 ## ZIPG pbWald
@@ -154,8 +164,8 @@ ZIPG_res2 = ZIPG_main(
 #> Running parametric bootstrap wald test 
 #> Finish
 
-summary_ZIPG(ZIPG_res2,type ='pbWald')
+res = ZIPG_summary(ZIPG_res2,type ='pbWald')
 #>    ZIPG pbWald 
 #>  H0: beta1* = 0 
-#>  pvalue =  0.0099
+#>  pvalue =  0.0198
 ```

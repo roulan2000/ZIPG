@@ -34,7 +34,7 @@ B for bootstrap sample size, X0 and X_star0 for formula of covariates included i
 \item{bWald_list}{A list of arguments for non-parameteric bootstrap Wald test, B for bootstrap sample size,}
 }
 \value{
-A list of ZIPG fitted model. Use summary_ZIPG() for a quick look at the results.
+A list of ZIPG fitted model. Use ZIPG_summary() for a quick look at the results.
 }
 \description{
 Fit zero-inflated poisson-gamma model via EM Algorithm
@@ -45,5 +45,5 @@ dat = Dietary
 ZIPG_res <- ZIPG_main(data = dat$COV,
 X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
 W = dat$OTU[,100], M = dat$M )
-summary_ZIPG(ZIPG_res)
+ZIPG_summary(ZIPG_res)
 }
