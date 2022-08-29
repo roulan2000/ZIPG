@@ -20,6 +20,6 @@ Dietary
 }
 \description{
 A diet-microbiome data with shotgun metagenomic sequencing results of fecal samples and daily dietary records of 34 subjects in 17 consecutive days.
-diamonds. Original data see article "Daily Sampling Reveals Personalized Diet- Microbiome Associations in Humans".
+diamonds. Original data see article "Daily Sampling Reveals Personalized Diet- Microbiome Associations in Humans" (Johnson et al. 2019).
 }
 \keyword{datasets}
