@@ -1,33 +1,161 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # ZIPG
-## Overview
 
-We provide R code for Zero-inflated Poisson-Gamma Model (ZIPG) with an application to longitudinal microbiome count data. You can download R code from this github, and see more details in `ZIPG_demo.Rmd`.
+<!-- badges: start -->
+<!-- badges: end -->
 
-## Usage
+We provide R code for Zero-inflated Poisson-Gamma Model (ZIPG) with an
+application to longitudinal microbiome count data.
 
-```R
-ZIPG_main(W,M,X,X_star,bWald_list = NULL,pbWald_list = NULL)
+## Installation
+
+You can install the development version of ZIPG like so:
+
+``` r
+devtools::install_github("roulan2000/ZIPG")
 ```
+
+## Example
+
+### Load Data
+
+Complete Dietary data can be find in “Daily sampling reveals
+personalized diet-microbiome associations in humans.” (Johnson et
+al. 2019)
+
+``` r
+library(ZIPG)
+library(ggplot2)
+data("Dietary")
+dat = Dietary
+taxa_num = 100
+dat$taxa_name[taxa_num] # taxa name
+#>                             OTU100 
+#> "Burkholderiales bacterium 1_1_47"
+W = dat$OTU[,taxa_num] # taxa count
+M = dat$M # sequencing depth
+ggplot(NULL)+
+  geom_boxplot(aes(
+  x = as.factor(dat$COV$ALC01),y=log((W+0.5)/M)))+
+  labs(title = dat$taxa_name[taxa_num],
+       x = 'ALC',y='Relative Abundance')+
+  theme_bw()
+```
+
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+
+## ZIPG Wald
+
+Use function `ZIPG_main()` to run our ZIPG model.
 
 **Input :**
 
-W : Observed count data.
+`W` : Observed taxa count data.
 
-M : Sequencing depth.
+`M` : Sequencing depth, ZIPG use log(M) as offset by default.
 
-X, X\_star : Covariates of interesting with intercept.
-
-pbWald_list, bWald_list: Setting of  non-parameteric  bootstrap and parameteric bootstrap.
+`X`, `X\_star` : Covariates of interesting of differential abundance and
+differential varibility, input as formula.
 
 **Output list:**
 
-init : pscl results, used as initialization.
+`ZIPG_res\$init` : pscl results, used as initialization.
 
-res : ZIPG output evaluated at last EM iteration.
+`ZIPG_res\$res` : ZIPG output evaluated at last EM iteration.
 
-​	res\$par : ZIPG estimation for $\Omega = (\beta,\beta^*,\gamma)$.
+`ZIPG_res\$res\$par` : ZIPG estimation for
+$\Omega = (\beta,\beta^*,\gamma)$.
 
-wald_test : ZIPG Wald test
+`ZIPG_res\$wald_test` : ZIPG Wald test
 
-logli : ZIPG log-likelihood
+`ZIPG_res\$logli` : ZIPG log-likelihood
 
+``` r
+ZIPG_res <- ZIPG_main(data = dat$COV,
+                      X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
+                      W = W, M = M)
+summary_ZIPG(ZIPG_res)
+#>           ZIPG Wald  
+#>        Estimation     SE     pval    
+#> beta0      -7.371 0.1512 0.00e+00 ***
+#> beta1       0.121 0.1985 5.41e-01    
+#> beta2       0.106 0.0188 1.41e-08 ***
+#> beta3      -0.118 0.0287 4.17e-05 ***
+#> beta0*      0.525 0.1199 1.20e-05 ***
+#> beta1*      0.606 0.1406 1.63e-05 ***
+#> gamma      -2.080 0.1460 4.93e-46 ***
+```
+
+## ZIPG bWald
+
+Set the bootstrap replicates `B` in `bWald_list` to conduct ZIPG-bWald,
+results and covariance matrix can be find in `ZIPG_res\$bWald`.
+
+``` r
+# Set bootstrap replicates B
+bWald_list = list(B = 100)
+# Wait for a wile
+ZIPG_res1 = ZIPG_main(
+  data = dat$COV,
+  X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
+  W = W, M = M,
+  bWald_list = bWald_list)
+#> Running non-parametric bootstrap wald test 
+#> Finish
+summary_ZIPG(ZIPG_res1,type = 'bWald')
+#>           ZIPG bWald   
+#>        Estimation     SE     pval    
+#> beta0      -7.371 0.1815 0.00e+00 ***
+#> beta1       0.121 0.2325 6.01e-01    
+#> beta2       0.106 0.0190 2.04e-08 ***
+#> beta3      -0.118 0.0366 1.32e-03  **
+#> beta0*      0.525 0.1323 7.27e-05 ***
+#> beta1*      0.606 0.1856 1.09e-03  **
+#> gamma      -2.080 0.4088 3.62e-07 ***
+```
+
+To test more complicated hypothesis, you may use the covariance matirx
+driven from bootstrap.
+
+``` r
+round(ZIPG_res1$bWald$vcov,3)
+#>        [,1]   [,2]   [,3]   [,4]   [,5]   [,6]   [,7]
+#> [1,]  0.033 -0.037  0.001  0.004  0.010 -0.014 -0.003
+#> [2,] -0.037  0.054 -0.001 -0.005 -0.011  0.012  0.017
+#> [3,]  0.001 -0.001  0.000  0.000  0.000  0.000 -0.001
+#> [4,]  0.004 -0.005  0.000  0.001  0.001 -0.002  0.001
+#> [5,]  0.010 -0.011  0.000  0.001  0.018 -0.015 -0.017
+#> [6,] -0.014  0.012  0.000 -0.002 -0.015  0.034 -0.027
+#> [7,] -0.003  0.017 -0.001  0.001 -0.017 -0.027  0.167
+```
+
+## ZIPG pbWald
+
+Set bootstrap replicates `B` and the null hypothesis by formula `X0` and
+`X_star0` in `pbWald_list` to conduct ZIPG-pbWald, results can be find
+in ZIPG_res\$pbWald
+
+``` r
+# test beta1star, the 6th parameter
+# 
+pbWald_list = list(
+  X0 = ~ALC01 + nutrPC1+nutrPC2,
+  X_star0 = ~ 1,
+  B = 100
+)
+
+ZIPG_res2 = ZIPG_main(
+  data = dat$COV,
+  X = ~ALC01+nutrPC1+nutrPC2, X_star = ~ ALC01,
+  W = W, M = M,
+  pbWald_list= pbWald_list)
+#> Running parametric bootstrap wald test 
+#> Finish
+
+summary_ZIPG(ZIPG_res2,type ='pbWald')
+#>    ZIPG pbWald 
+#>  H0: beta1* = 0 
+#>  pvalue =  0.0099
+```
