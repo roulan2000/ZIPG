@@ -7,7 +7,12 @@
 pwald(res, test_index)
 }
 \arguments{
-\item{test_index}{}
+\item{res}{Output from ZIPG_optim_EM}
+
+\item{test_index}{Index of which parameters equal to zero under H0.}
+}
+\value{
+A list of Wald test result
 }
 \description{
 Get Wald test p-value

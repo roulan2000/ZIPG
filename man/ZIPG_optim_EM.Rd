@@ -19,6 +19,31 @@ ZIPG_optim_EM(
   maxit = 200
 )
 }
+\arguments{
+\item{W}{Count data}
+
+\item{M}{Sequencing depth, ZIPG use log(M) as offset by default}
+
+\item{X}{Formula of covariates of differential abundance}
+
+\item{X_star}{Formula of covariates of differential varibility}
+
+\item{A}{(No use, set A=1)}
+
+\item{d}{The number of covariates of differential abundance}
+
+\item{d_star}{The number of covariates of differential varibility}
+
+\item{parms}{initialization parameters}
+
+\item{optim_method}{Default : 'BFGS'}
+
+\item{fix_index}{Index of parameters that are fixed in optimization}
+
+\item{tol}{convergence criterion}
+
+\item{maxit}{maximum number of iteration}
+}
 \description{
 ZIPG EM algorithm to optimize log-likelihood
 }

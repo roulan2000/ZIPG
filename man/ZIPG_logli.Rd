@@ -7,7 +7,26 @@
 ZIPG_logli(W, M, X, X_star, A = 1, d, d_star, parms, sep = FALSE)
 }
 \arguments{
-\item{sep}{}
+\item{W}{Count data}
+
+\item{M}{Sequencing depth, ZIPG use log(M) as offset by default}
+
+\item{X}{Formula of covariates of differential abundance}
+
+\item{X_star}{Formula of covariates of differential varibility}
+
+\item{A}{(No use, set A=1)}
+
+\item{d}{The number of covariates of differential abundance}
+
+\item{d_star}{The number of covariates of differential varibility}
+
+\item{parms}{Vector of parameters including beta,beta_star and gamma.}
+
+\item{sep}{(No use, set FALSE)Return log-likelihodd of each sample separately.}
+}
+\value{
+The value of log-likelihood of observed data under ZIPG model.
 }
 \description{
 Log-likelihood for ZIPG

@@ -7,7 +7,24 @@
 ZIPG_init_pscl(W, M, X, X_star, A = 1, d, d_star, return_model = T)
 }
 \arguments{
-\item{return_model}{}
+\item{W}{Count data}
+
+\item{M}{Sequencing depth, ZIPG use log(M) as offset by default}
+
+\item{X}{Formula of covariates of differential abundance}
+
+\item{X_star}{Formula of covariates of differential varibility}
+
+\item{A}{(No use, set A=1)}
+
+\item{d}{The number of covariates of differential abundance}
+
+\item{d_star}{The number of covariates of differential varibility}
+
+\item{return_model}{Whether return the full model}
+}
+\value{
+A list of pscl result.
 }
 \description{
 Initialize ZIPG from pscl estimation

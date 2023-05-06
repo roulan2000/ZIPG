@@ -7,7 +7,26 @@
 ZIPG_logli_EM(W, M, X, X_star, A, d, d_star, parms, zp)
 }
 \arguments{
-\item{zp}{}
+\item{W}{Count data}
+
+\item{M}{Sequencing depth, ZIPG use log(M) as offset by default}
+
+\item{X}{Formula of covariates of differential abundance}
+
+\item{X_star}{Formula of covariates of differential varibility}
+
+\item{A}{(No use, set A=1)}
+
+\item{d}{The number of covariates of differential abundance}
+
+\item{d_star}{The number of covariates of differential varibility}
+
+\item{parms}{Vector of parameters including beta,beta_star and gamma.}
+
+\item{zp}{Latent variable of zero-inflation}
+}
+\value{
+The value of log-likelihood of complete data under ZIPG model.
 }
 \description{
 Log-likelihood for ZIPG given latent variable

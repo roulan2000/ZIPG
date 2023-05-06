@@ -13,7 +13,10 @@ ZIPG_CI(ZIPG_res, type = "Wald", CI_type = "normal", alpha = 0.05)
 
 \item{CI_type}{Type of confidence interval, 'Wald','bWald' or 'pbWald'.}
 
-\item{alpha}{We construct (1- alpha)% confidence interval by alpha/2 and (1-alpha/2).}
+\item{alpha}{We construct (1- alpha)\% confidence interval by alpha/2 and (1-alpha/2).}
+}
+\value{
+Table of confidence interval
 }
 \description{
 Get confidence interval from ZIPG model

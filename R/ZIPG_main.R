@@ -1,5 +1,18 @@
 #' ZIPG EM algorithm to optimize log-likelihood
 #'
+#' @param W Count data
+#' @param M Sequencing depth, ZIPG use log(M) as offset by default
+#' @param X Formula of covariates of differential abundance
+#' @param X_star Formula of covariates of differential varibility
+#' @param A (No use, set A=1)
+#' @param d The number of covariates of differential abundance
+#' @param d_star The number of covariates of differential varibility
+#' @param parms initialization parameters
+#' @param optim_method Default : 'BFGS'
+#' @param fix_index Index of parameters that are fixed in optimization
+#' @param tol convergence criterion
+#' @param maxit maximum number of iteration
+
 ZIPG_optim_EM <- function(W,M,X,X_star,
                         A=1,d,d_star,
                         parms,optim_method ='BFGS',
@@ -431,17 +444,17 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
 
 #' Log-likelihood for ZIPG
 #'
-#' @param W
-#' @param M
-#' @param X
-#' @param X_star
-#' @param A
-#' @param d
-#' @param d_star
-#' @param parms
-#' @param sep
+#' @param W Count data
+#' @param M Sequencing depth, ZIPG use log(M) as offset by default
+#' @param X Formula of covariates of differential abundance
+#' @param X_star Formula of covariates of differential varibility
+#' @param A (No use, set A=1)
+#' @param d The number of covariates of differential abundance
+#' @param d_star The number of covariates of differential varibility
+#' @param parms Vector of parameters including beta,beta_star and gamma.
+#' @param sep (No use, set FALSE)Return log-likelihodd of each sample separately.
 #'
-#' @return
+#' @return The value of log-likelihood of observed data under ZIPG model.
 ZIPG_logli<- function(W,M,X,X_star,
                     A=1,d,d_star,
                     parms,sep=FALSE)
@@ -489,17 +502,17 @@ ZIPG_logli<- function(W,M,X,X_star,
 
 #' Log-likelihood for ZIPG given latent variable
 #'
-#' @param W
-#' @param M
-#' @param X
-#' @param X_star
-#' @param A
-#' @param d
-#' @param d_star
-#' @param parms
-#' @param zp
+#' @param W Count data
+#' @param M Sequencing depth, ZIPG use log(M) as offset by default
+#' @param X Formula of covariates of differential abundance
+#' @param X_star Formula of covariates of differential varibility
+#' @param A (No use, set A=1)
+#' @param d The number of covariates of differential abundance
+#' @param d_star The number of covariates of differential varibility
+#' @param parms Vector of parameters including beta,beta_star and gamma.
+#' @param zp Latent variable of zero-inflation
 #'
-#' @return
+#' @return The value of log-likelihood of complete data under ZIPG model.
 ZIPG_logli_EM <- function(W,M,X,X_star,
                         A,d,d_star,
                         parms,zp) {
@@ -546,16 +559,16 @@ ZIPG_logli_EM <- function(W,M,X,X_star,
 
 #' Initialize ZIPG from pscl estimation
 #'
-#' @param W
-#' @param M
-#' @param X
-#' @param X_star
-#' @param A
-#' @param d
-#' @param d_star
-#' @param return_model
+#' @param W Count data
+#' @param M Sequencing depth, ZIPG use log(M) as offset by default
+#' @param X Formula of covariates of differential abundance
+#' @param X_star Formula of covariates of differential varibility
+#' @param A (No use, set A=1)
+#' @param d The number of covariates of differential abundance
+#' @param d_star The number of covariates of differential varibility
+#' @param return_model Whether return the full model
 #'
-#' @return
+#' @return A list of pscl result.
 ZIPG_init_pscl <- function(W,M,X,X_star,
                          A=1,d,d_star,
                          return_model = T){
@@ -621,10 +634,10 @@ ZIPG_init_pscl <- function(W,M,X,X_star,
 
 #' Get Wald test p-value
 #'
-#' @param res
-#' @param test_index
+#' @param res Output from ZIPG_optim_EM
+#' @param test_index Index of which parameters equal to zero under H0.
 #'
-#' @return
+#' @return A list of Wald test result
 pwald <- function(res,test_index)
 {
   solve_hessian<- function(hessian){
@@ -786,16 +799,16 @@ ZIPG_simulate <- function(M,X,X_star,
 
 #' Run EM algorithm to fit ZIPG model.
 #'
-#' @param W
-#' @param M
-#' @param X
-#' @param X_star
-#' @param optim_method
-#' @param init
-#' @param return_model
-#' @param ref_init
+#' @param W Count data
+#' @param M Sequencing depth, ZIPG use log(M) as offset by default
+#' @param X Formula of covariates of differential abundance
+#' @param X_star Formula of covariates of differential varibility
+#' @param optim_method Default : 'BFGS'
+#' @param init initialization parameters
+#' @param return_model whether return full complete imfomation for fitted model
+#' @param ref_init Reference
 #'
-#' @return
+#' @return A list of EM optimize result
 ZIPG_main_EM <- function(W,M,X,X_star,
                        optim_method = 'BFGS',init=NULL,
                        return_model = T,
@@ -904,9 +917,9 @@ ZIPG_main_EM <- function(W,M,X,X_star,
 
 #' pscl function to get p-value from pscl result
 #'
-#' @param object
+#' @param object pscl result
 #'
-#' @return
+#' @return pvalue
 pval_getpval<- function(object){
   object$residuals <- residuals(object, type = "pearson")
   kc <- length(object$coefficients$count)
@@ -1125,7 +1138,7 @@ ZIPG_main <- function(data,W,M,X,X_star,
 #' @param ZIPG_res Result from ZIPG_main()
 #' @param type Type of hypothesis testing method, 'Wald','bWald' or 'pbWald'.
 #'
-#' @return
+#' @return pvalue
 #' @export
 #'
 #' @examples
@@ -1187,9 +1200,9 @@ ZIPG_summary<-function(ZIPG_res,type='Wald'){
 #' @param ZIPG_res Result from ZIPG_main()
 #' @param type Type of hypothesis testing method, 'Wald' or 'bWald'.
 #' @param CI_type Type of confidence interval, 'Wald','bWald' or 'pbWald'.
-#' @param alpha We construct (1- alpha)% confidence interval by alpha/2 and (1-alpha/2).
+#' @param alpha We construct (1- alpha)\% confidence interval by alpha/2 and (1-alpha/2).
 #'
-#' @return
+#' @return Table of confidence interval
 #' @export
 #'
 #' @examples

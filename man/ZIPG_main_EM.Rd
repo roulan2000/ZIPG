@@ -16,7 +16,24 @@ ZIPG_main_EM(
 )
 }
 \arguments{
-\item{ref_init}{}
+\item{W}{Count data}
+
+\item{M}{Sequencing depth, ZIPG use log(M) as offset by default}
+
+\item{X}{Formula of covariates of differential abundance}
+
+\item{X_star}{Formula of covariates of differential varibility}
+
+\item{optim_method}{Default : 'BFGS'}
+
+\item{init}{initialization parameters}
+
+\item{return_model}{whether return full complete imfomation for fitted model}
+
+\item{ref_init}{Reference}
+}
+\value{
+A list of EM optimize result
 }
 \description{
 Run EM algorithm to fit ZIPG model.

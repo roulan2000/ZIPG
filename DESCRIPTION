@@ -5,7 +5,8 @@ Version: 1.0
 Author: Roulan Jiang, Tianying Wang
 Maintainer: Roulan Jiang <roulan2000@gmail.com>, Tianying Wang <tianyingw0905@outlook.com>
 Description: We provide a flexible Zero-inflated Poisson-Gamma Model (ZIPG) model by connecting both mean abundance and the variability to different covariates, and build valid statistical inference procedures for both parameter estimation and hypothesis testing. These functions can be used to analyze microbiome count data with zero-inflation and overdispersion. 
-License: MIT
+License: GPL (>= 2)
+URL: https://github.com/roulan2000/ZIPG
 Encoding: UTF-8
 LazyData: true
 Depends: 

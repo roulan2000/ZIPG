@@ -11,6 +11,9 @@ ZIPG_summary(ZIPG_res, type = "Wald")
 
 \item{type}{Type of hypothesis testing method, 'Wald','bWald' or 'pbWald'.}
 }
+\value{
+pvalue
+}
 \description{
 Summary for ZIPG_main() result.
 }

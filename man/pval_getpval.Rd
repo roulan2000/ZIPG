@@ -7,7 +7,10 @@
 pval_getpval(object)
 }
 \arguments{
-\item{object}{}
+\item{object}{pscl result}
+}
+\value{
+pvalue
 }
 \description{
 pscl function to get p-value from pscl result

@@ -1,0 +1,19 @@
+citHeader("To cite ZIPG in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "A Flexible Zero-Inflated Poisson-Gamma Model with Application to Microbiome Sequence Count Data",
+  author   = personList(as.person("Roulan Jiang"), 
+                             as.person("Xiang Zhan"),
+                             as.person("Tianying Wang")), 
+  journal  = "Journal of the American Statistical Association",
+  year     = "2023",
+  volume   = "0",
+  number   = "0",
+  pages    = "1-13",
+  publisher = "Taylor & Francis",
+  url      = "https://doi.org/10.1080/01621459.2022.2151447",
+  textVersion = paste(
+
+  )
+)
