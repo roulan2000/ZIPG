@@ -32,13 +32,13 @@ ZIPG_main <- function(data,W,M,X,X_star,
   if (missing(data)) {
     stop('Missing covariates data frame!')
   }
-  tX <- terms(fX, data = data)
-  mf = model.frame(data = data,formula = fX,drop.unused.levels = TRUE)
-  X <- model.matrix(tX, mf)
+  tX <- stats::terms(fX, data = data)
+  mf = stats::model.frame(data = data,formula = fX,drop.unused.levels = TRUE)
+  X <- stats::model.matrix(tX, mf)
 
-  tX <- terms(fX_star, data = data)
-  mf = model.frame(data = data,formula = fX_star,drop.unused.levels = TRUE)
-  X_star <- model.matrix(tX, mf)
+  tX <- stats::terms(fX_star, data = data)
+  mf = stats::model.frame(data = data,formula = fX_star,drop.unused.levels = TRUE)
+  X_star <- stats::model.matrix(tX, mf)
 
   d = dim(X)[2]-1
   d_star = dim(X_star)[2]-1
@@ -76,11 +76,11 @@ ZIPG_main <- function(data,W,M,X,X_star,
     n_parms = length(res$res$par)
     par_SE =  t(par_b)[,-c(1:n_parms)]
     par_b = t(par_b)[,1:n_parms]
-    varb = var(par_b)
+    varb = stats::var(par_b)
     n_parms = length(res$res$par)
     SE = sqrt(diag(varb))
     twald = res$res$par^2/diag(varb)
-    pval = pchisq(twald,df=1,lower.tail = F)
+    pval = stats::pchisq(twald,df=1,lower.tail = F)
 
     res$bWald = list(
       B = B,
@@ -100,13 +100,13 @@ ZIPG_main <- function(data,W,M,X,X_star,
     fX_star0 = pbWald_list$X_star0
     all.vars(fX0) %in% all.vars(fX)
 
-    tX <- terms(fX0, data = data)
-    mf = model.frame(data = data,formula = fX0,drop.unused.levels = TRUE)
-    X0 <- model.matrix(tX, mf)
+    tX <- stats::terms(fX0, data = data)
+    mf = stats::model.frame(data = data,formula = fX0,drop.unused.levels = TRUE)
+    X0 <- stats::model.matrix(tX, mf)
 
-    tX <- terms(fX_star0, data = data)
-    mf = model.frame(data = data,formula = fX_star0,drop.unused.levels = TRUE)
-    X_star0 <- model.matrix(tX, mf)
+    tX <- stats::terms(fX_star0, data = data)
+    mf = stats::model.frame(data = data,formula = fX_star0,drop.unused.levels = TRUE)
+    X_star0 <- stats::model.matrix(tX, mf)
 
     d0 = dim(X0)[2]-1
     d_star0 = dim(X_star0)[2]-1
@@ -135,7 +135,7 @@ ZIPG_main <- function(data,W,M,X,X_star,
     LRTdf = d+d_star-(d0+d_star0)
     res$res0 = res0
     LR = 2*(res$logli- res0$logli)
-    pval_LRT = pchisq(LR,df =  LRTdf,lower.tail = F)
+    pval_LRT = stats::pchisq(LR,df =  LRTdf,lower.tail = F)
     res$LRT  = list(LR = LR,pval =pval_LRT)
 
     if(!is.null(pbWald_list$B)){
@@ -211,7 +211,7 @@ ZIPG_summary<-function(ZIPG_res,type='Wald'){
   d_star = ZIPG_res$info$d_star
   n_parms = length(ZIPG_res$res$par)
   if(type =='Wald'){
-  star1=as.character(symnum(ZIPG_res$wald_test$pval,
+  star1=as.character(stats::symnum(ZIPG_res$wald_test$pval,
                             cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                             symbols = c("***", "**", "*", ".", " ")))
   Wald_mat = data.frame(cbind(ZIPG_res$res$par,
@@ -226,7 +226,7 @@ ZIPG_summary<-function(ZIPG_res,type='Wald'){
   print(Wald_mat,digits = 3)
   return(Wald_mat)
   }else if(type =='bWald'){
-    star1=as.character(symnum(ZIPG_res$bWald$pval,
+    star1=as.character(stats::symnum(ZIPG_res$bWald$pval,
                               cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                               symbols = c("***", "**", "*", ".", " ")))
     Wald_mat = data.frame(cbind(ZIPG_res$res$par,
@@ -275,8 +275,8 @@ ZIPG_CI<-function(ZIPG_res,type='Wald',CI_type = 'normal',alpha = 0.05){
   d_star = ZIPG_res$info$d_star
   n_parms = length(ZIPG_res$res$par)
   if(type =='Wald'){
-    lb = qnorm(alpha/2)
-    ub = qnorm(1-alpha/2)
+    lb = stats::qnorm(alpha/2)
+    ub = stats::qnorm(1-alpha/2)
 
     CI_mat = data.frame(
       ZIPG_res$res$par,
@@ -293,8 +293,8 @@ ZIPG_CI<-function(ZIPG_res,type='Wald',CI_type = 'normal',alpha = 0.05){
     return(CI_mat)
   }else if(type =='bWald'){
     if(CI_type =='normal'){
-      lb = qnorm(alpha/2)
-      ub = qnorm(1-alpha/2)
+      lb = stats::qnorm(alpha/2)
+      ub = stats::qnorm(1-alpha/2)
 
       CI_mat = data.frame(
         ZIPG_res$res$par,
@@ -399,12 +399,12 @@ ZIPG_simulate <- function(M,X,X_star,
   }
 
   for(i in 1:N){
-    U_simulate_i =matrix(rgamma(n*A,shape = 1/theta,scale = theta),
+    U_simulate_i =matrix(stats::rgamma(n*A,shape = 1/theta,scale = theta),
                          n,A)
-    W_simulate_i = matrix(rpois(n*A,lambda*U_simulate_i),n,A)
+    W_simulate_i = matrix(stats::rpois(n*A,lambda*U_simulate_i),n,A)
 
     if(zi==T){
-      zero_sim = matrix(rbinom(n*A,size = 1 ,prob = p_0),n,A,byrow = T)
+      zero_sim = matrix(stats::rbinom(n*A,size = 1 ,prob = p_0),n,A,byrow = T)
       W_simulate_i = W_simulate_i*(zero_sim==0)
     }
     W_list[[i]] = W_simulate_i

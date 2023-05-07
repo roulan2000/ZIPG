@@ -120,7 +120,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
         lambda[,k] = exp(X %*% beta[,k])*M
         theta[,k] = exp(X_star %*% beta_star[,k])
 
-        nb_prob[,k] = dnbinom(W[,k],
+        nb_prob[,k] = stats::dnbinom(W[,k],
                               mu = lambda[,k],size = 1/theta[,k],
                               log = TRUE)
 
@@ -170,7 +170,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
         lambda[,k] = exp(X %*% beta[,k])*M
         theta[,k] = exp(X_star %*% beta_star[,k])
 
-        nb_prob[,k] = dnbinom(W[,k],
+        nb_prob[,k] = stats::dnbinom(W[,k],
                               mu = lambda[,k],size = 1/theta[,k],
                               log = TRUE)
 
@@ -266,7 +266,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
       }
 
       if(optim_method == 'L-BFGS-B'){
-        fit <- tryCatch(optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
+        fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                               par = par,
                               method = "L-BFGS-B", hessian = T,
                               control = list(maxit = 10000,trace = 0,
@@ -277,7 +277,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
                           return(conditionMessage(e))
                         })
       } else {
-        fit <- tryCatch(optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
+        fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                               par = par,
                               method = "BFGS", hessian = T,
                               control = list(maxit = 10000,trace = 0,
@@ -311,7 +311,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
         fix_index = parms_index[-taxa_index[,t]]
         par = parms_fit_single[-fix_index]
         fix_par = parms_fit_single[fix_index]
-        fit <- tryCatch(optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
+        fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                               par = par,
                               method = "BFGS", hessian = T,
                               control = list(maxit = 10000,trace = 0,
@@ -332,7 +332,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
           fix_index = parms_index[-beta_star_index]
           par = parms_fit_single[-fix_index]
           fix_par = parms_fit_single[fix_index]
-          fit <- tryCatch(optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
+          fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                                 par = par,
                                 method = "BFGS", hessian = T,
                                 control = list(maxit = 10000,trace = 0,
@@ -350,7 +350,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
           }
         }
       }
-      fit_final <- tryCatch(optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
+      fit_final <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                             par = parms_fit_single,
                             method = "BFGS", hessian = T,
                             control = list(maxit = 1,trace = 0,
@@ -393,7 +393,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
       lambda[,k] = exp(X %*% beta[,k])*M
       theta[,k] = exp(X_star %*% beta_star[,k])
 
-      nb_prob[,k] = dnbinom(W[,k],
+      nb_prob[,k] = stats::dnbinom(W[,k],
                             mu = lambda[,k],size = 1/theta[,k],
                             log = TRUE)
 
@@ -486,7 +486,7 @@ ZIPG_logli<- function(W,M,X,X_star,
     lambda[,k] = exp(X %*% beta[,k])*M
     theta[,k] = exp(X_star %*% beta_star[,k])
 
-    nb_prob[,k] = dnbinom(W[,k],
+    nb_prob[,k] = stats::dnbinom(W[,k],
                           mu = lambda[,k],size = 1/theta[,k],
                           log = TRUE)
 
@@ -545,7 +545,7 @@ ZIPG_logli_EM <- function(W,M,X,X_star,
     lambda[,k] = exp(X %*% beta[,k])*M
     theta[,k] = exp(X_star %*% beta_star[,k])
 
-    nb_prob[,k] = dnbinom(W[,k],
+    nb_prob[,k] = stats::dnbinom(W[,k],
                           mu = lambda[,k],size = 1/theta[,k],
                           log = TRUE)
 
@@ -693,7 +693,7 @@ pwald <- function(res,test_index)
         if(cov==0 | is.na(cov)){cov=NA}
         cov = abs(solve(cov))
         twald[i] = t(par) %*% cov %*% par
-        pval[i] = pchisq(twald[i],df=1,lower.tail = F)
+        pval[i] = stats::pchisq(twald[i],df=1,lower.tail = F)
       }
     }else{
       par = as.matrix(res$par[test_index])
@@ -701,7 +701,7 @@ pwald <- function(res,test_index)
       SE = sqrt(abs(cov))
       cov = solve(cov)
       twald = t(par) %*% cov %*% par
-      pval = pchisq(twald,df=length(test_index),lower.tail = F)
+      pval = stats::pchisq(twald,df=length(test_index),lower.tail = F)
     }
 
     return(list(SE=SE,
@@ -717,7 +717,7 @@ pwald <- function(res,test_index)
 #' @return pvalue
 #' @noRd
 pval_getpval<- function(object){
-  object$residuals <- residuals(object, type = "pearson")
+  object$residuals <- stats::residuals(object, type = "pearson")
   kc <- length(object$coefficients$count)
   kz <- length(object$coefficients$zero)
   se <- sqrt(diag(object$vcov))
@@ -730,7 +730,7 @@ pval_getpval<- function(object){
     kc <- kc + 1
   }
   zstat <- coef/se
-  pval <- 2 * pnorm(-abs(zstat))
+  pval <- 2 * stats::pnorm(-abs(zstat))
   return(list(SE = se,
               pval = pval))
 }
@@ -809,7 +809,7 @@ ZIPG_main_EM <- function(W,M,X,X_star,
       t_ls1 = pwald(res1,test_index)
       LR1 = logli1-pscl_init$init_logli
       LR1 = 2*c(LR1,sum(LR1))
-      LRT_pval1 = pchisq(LR1,df = d_star,lower.tail = F)
+      LRT_pval1 = stats::pchisq(LR1,df = d_star,lower.tail = F)
     }
 
 

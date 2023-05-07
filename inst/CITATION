@@ -1,11 +1,9 @@
 citHeader("To cite ZIPG in publications use:")
 
-citEntry(
-  entry    = "Article",
+bibentry(
+  bibtype  = "Article",
   title    = "A Flexible Zero-Inflated Poisson-Gamma Model with Application to Microbiome Sequence Count Data",
-  author   = personList(as.person("Roulan Jiang"), 
-                             as.person("Xiang Zhan"),
-                             as.person("Tianying Wang")), 
+  author   = c("Roulan Jiang","Xiang Zhan","Tianying Wang"),
   journal  = "Journal of the American Statistical Association",
   year     = "2023",
   volume   = "0",
