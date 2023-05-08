@@ -88,6 +88,7 @@ res = ZIPG_summary(ZIPG_res)
 Set the bootstrap replicates `B` in `bWald_list` to conduct ZIPG-bWald, results and covariance matrix can be find in `ZIPG_res$bWald`. 
 
 ```{r}
+set.seed(123)
 # Set bootstrap replicates B
 bWald_list = list(B = 100)
 # Wait for a wile
@@ -127,3 +128,7 @@ ZIPG_res2 = ZIPG_main(
 
 res = ZIPG_summary(ZIPG_res2,type ='pbWald')
 ```
+
+# References
+
+* Jiang, Roulan, Xiang Zhan, and Tianying Wang. ["A Flexible Zero-Inflated Poisson-Gamma Model with Application to Microbiome Sequence Count Data."](https://doi.org/10.1080/01621459.2022.2151447) Journal of the American Statistical Association (2023): 1-13.

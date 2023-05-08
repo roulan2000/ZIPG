@@ -103,8 +103,8 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
       beta_star[2:(d_star+1),]  =  parms[(A*(d+2)+1) : (A*(d+2)+d_star)]}
     gamma_0 = t(as.matrix(parms[(A*(d+2)+d_star+1) : (A*(d+3)+d_star)]))
     p_0 = 1/(1+exp(-gamma_0))
-    if(init == T){
-      p_0_col = matrix(rep(p_0,n),n,A,byrow = T)
+    if(init == TRUE){
+      p_0_col = matrix(rep(p_0,n),n,A,byrow = TRUE)
       return(p_0_col)
     }else{
 
@@ -268,23 +268,23 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
       if(optim_method == 'L-BFGS-B'){
         fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                               par = par,
-                              method = "L-BFGS-B", hessian = T,
+                              method = "L-BFGS-B", hessian = TRUE,
                               control = list(maxit = 10000,trace = 0,
                                              fnscale = -1,factr = 1e-6),
                               fix_index = fix_index,fix_par = fix_par,zp=zp),
                         error = function(e){
-                          cat("optim ERROR :",conditionMessage(e),"\n")
+                          warning("optim ERROR :",conditionMessage(e),"\n")
                           return(conditionMessage(e))
                         })
       } else {
         fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                               par = par,
-                              method = "BFGS", hessian = T,
+                              method = "BFGS", hessian = TRUE,
                               control = list(maxit = 10000,trace = 0,
                                              fnscale = -1,reltol = 1e-6),
                               fix_index = fix_index,fix_par = fix_par,zp=zp),
                         error = function(e){
-                          cat("optim ERROR :",conditionMessage(e),"\n")
+                          warning("optim ERROR :",conditionMessage(e),"\n")
                           return(conditionMessage(e))
                         })
 
@@ -313,12 +313,12 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
         fix_par = parms_fit_single[fix_index]
         fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                               par = par,
-                              method = "BFGS", hessian = T,
+                              method = "BFGS", hessian = TRUE,
                               control = list(maxit = 10000,trace = 0,
                                              fnscale = -1,reltol = 1e-6),
                               fix_index = fix_index,fix_par = fix_par,zp=zp),
                         error = function(e){
-                          cat("optim ERROR :",conditionMessage(e),"\n")
+                          warning("optim ERROR :",conditionMessage(e),"\n")
                           return(conditionMessage(e))
                         })
 
@@ -334,12 +334,12 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
           fix_par = parms_fit_single[fix_index]
           fit <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                                 par = par,
-                                method = "BFGS", hessian = T,
+                                method = "BFGS", hessian = TRUE,
                                 control = list(maxit = 10000,trace = 0,
                                                fnscale = -1,reltol = 1e-6),
                                 fix_index = fix_index,fix_par = fix_par,zp=zp),
                           error = function(e){
-                            cat("optim ERROR :",conditionMessage(e),"\n")
+                            warning("optim ERROR :",conditionMessage(e),"\n")
                             return(conditionMessage(e))
                           })
 
@@ -352,12 +352,12 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
       }
       fit_final <- tryCatch(stats::optim(fn = likelihood_ZIPG_EM, gr = grad_ZIPG_EM,
                             par = parms_fit_single,
-                            method = "BFGS", hessian = T,
+                            method = "BFGS", hessian = TRUE,
                             control = list(maxit = 1,trace = 0,
                                            fnscale = -1,reltol = 1e-6),
                             fix_index = NULL,fix_par = NULL,zp=zp),
                       error = function(e){
-                        cat("optim ERROR :",conditionMessage(e),"\n")
+                        warning("optim ERROR :",conditionMessage(e),"\n")
                         return(conditionMessage(e))
                       })
 
@@ -408,9 +408,9 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
   }
 
   parms0 = parms
-  zp0 = Estep_zp(parms0,F)
+  zp0 = Estep_zp(parms0,FALSE)
   Q0 = likelihood_ZIPG_EM_zp(parms0,zp0)
-  p_zp0 = colMeans(zp0,na.rm = T)
+  p_zp0 = colMeans(zp0,na.rm = TRUE)
   gamma_zp0 = log(p_zp0/(1-p_zp0))
 
   nIter = 0
@@ -433,7 +433,7 @@ ZIPG_optim_EM <- function(W,M,X,X_star,
     Q0 = Q1
     parms0 =parms1
     zp0 = zp1
-    p_zp1 = colMeans(zp0,na.rm = T)
+    p_zp1 = colMeans(zp0,na.rm = TRUE)
     gamma_zp1 = log(p_zp0/(1-p_zp0))
   }
   fit1$EM_nIter = nIter
@@ -575,7 +575,7 @@ ZIPG_logli_EM <- function(W,M,X,X_star,
 #' @noRd
 ZIPG_init_pscl <- function(W,M,X,X_star,
                          A=1,d,d_star,
-                         return_model = T){
+                         return_model = TRUE){
   length_parms = A*(d+3)+d_star
   beta_init = matrix(0,d+1,A)
   beta_star0_init = rep(0,A)
@@ -648,12 +648,12 @@ pwald <- function(res,test_index)
   solve_hessian<- function(hessian){
     svd_res = svd(hessian)
     smalls = which(svd_res$d<1e-5)
-    if(length(smalls)>=1) cat(svd_res$d[smalls])
+    if(length(smalls)>=1) warning('Small eigen values ',svd_res$d[smalls])
     svd_res$d[smalls] = 1e-5
     return(svd_res$v %*% diag(1/svd_res$d) %*% t(svd_res$u))
   }
   if(length(res)==1){
-    print('optim error')
+    warning('optim error')
     return(list(SE=NA,
                 twald = NA,
                 pval = NA))
@@ -671,7 +671,7 @@ pwald <- function(res,test_index)
                        })
   }
   if(length(cov_mat)==1){
-    print('solve hessian error')
+    warning('solve hessian error')
     return(list(SE=rep(NA,n),
                 twald = rep(NA,n),
                 pval = rep(NA,n)))
@@ -693,7 +693,7 @@ pwald <- function(res,test_index)
         if(cov==0 | is.na(cov)){cov=NA}
         cov = abs(solve(cov))
         twald[i] = t(par) %*% cov %*% par
-        pval[i] = stats::pchisq(twald[i],df=1,lower.tail = F)
+        pval[i] = stats::pchisq(twald[i],df=1,lower.tail = FALSE)
       }
     }else{
       par = as.matrix(res$par[test_index])
@@ -701,7 +701,7 @@ pwald <- function(res,test_index)
       SE = sqrt(abs(cov))
       cov = solve(cov)
       twald = t(par) %*% cov %*% par
-      pval = stats::pchisq(twald,df=length(test_index),lower.tail = F)
+      pval = stats::pchisq(twald,df=length(test_index),lower.tail = FALSE)
     }
 
     return(list(SE=SE,
@@ -750,10 +750,10 @@ pval_getpval<- function(object){
 #' @noRd
 ZIPG_main_EM <- function(W,M,X,X_star,
                          optim_method = 'BFGS',init=NULL,
-                         return_model = T,
+                         return_model = TRUE,
                          ref_init = NULL){
   test_index=NULL
-  doNBZIMM_init = F
+  doNBZIMM_init = FALSE
   A =1
   W = as.matrix(W)
   X = as.matrix(X)
@@ -764,7 +764,7 @@ ZIPG_main_EM <- function(W,M,X,X_star,
   if(is.null(init)){
     pscl_init=tryCatch(ZIPG_init_pscl(W,M,X,X_star,A,d,d_star,return_model),
                        error = function(e){
-                         cat("pscl ERROR :",conditionMessage(e))
+                         warning("pscl ERROR :",conditionMessage(e))
                          return(list(
                            init_model = NULL,
                            init_parms = rep(0,length_parms),
@@ -785,8 +785,8 @@ ZIPG_main_EM <- function(W,M,X,X_star,
                          parms_pscl,
                          optim_method ,NULL)
     if(length(res1)==1 || sum(is.na(pscl_init$init_pval))>=1){
-      print('pscl init optim error')
-      print(parms_pscl)
+      warning('pscl init optim error')
+      warning(parms_pscl)
       if(!is.null(ref_init)){
         res1 = ZIPG_optim_EM(W,M,X,X_star,
                              A,d,d_star,
@@ -805,11 +805,11 @@ ZIPG_main_EM <- function(W,M,X,X_star,
                    pval = rep(NA,length_parms))
       logli1 = rep(NA,A)
     } else {
-      logli1 = ZIPG_logli(W,M,X,X_star,A,d,d_star,res1$par,T)
+      logli1 = ZIPG_logli(W,M,X,X_star,A,d,d_star,res1$par,TRUE)
       t_ls1 = pwald(res1,test_index)
       LR1 = logli1-pscl_init$init_logli
       LR1 = 2*c(LR1,sum(LR1))
-      LRT_pval1 = stats::pchisq(LR1,df = d_star,lower.tail = F)
+      LRT_pval1 = stats::pchisq(LR1,df = d_star,lower.tail = FALSE)
     }
 
 
@@ -824,8 +824,8 @@ ZIPG_main_EM <- function(W,M,X,X_star,
                          parms,
                          optim_method ,NULL)
     if(length(res1)==1){
-      print('pscl_init optim error')
-      print(parms)
+      warning('pscl_init optim error')
+      warning(parms)
       res1 = list(
         par = rep(NA,length_parms),
         value = NA,
@@ -841,7 +841,7 @@ ZIPG_main_EM <- function(W,M,X,X_star,
       )
     } else {
       t_ls1 = pwald(res1,test_index)
-      logli1 = ZIPG_logli(W,M,X,X_star,A,d,d_star,res1$par,T)
+      logli1 = ZIPG_logli(W,M,X,X_star,A,d,d_star,res1$par,TRUE)
     }
     r_df = list(pscl_init = list(init = parms,
                                  res = res1,

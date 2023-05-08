@@ -10,7 +10,7 @@ ZIPG_main(
   M,
   X,
   X_star,
-  return_model = T,
+  return_model = TRUE,
   pbWald_list = NULL,
   bWald_list = NULL
 )

@@ -21,7 +21,7 @@
 #' W = dat$OTU[,100], M = dat$M )
 #' ZIPG_summary(ZIPG_res)
 ZIPG_main <- function(data,W,M,X,X_star,
-                      return_model = T, pbWald_list = NULL,bWald_list = NULL){
+                      return_model = TRUE, pbWald_list = NULL,bWald_list = NULL){
   EM = TRUE
   optim_method='BFGS'
 
@@ -53,26 +53,26 @@ ZIPG_main <- function(data,W,M,X,X_star,
   )
 
   if(!is.null(bWald_list)){
-    cat('Running non-parametric bootstrap wald test \n')
+    message('Running non-parametric bootstrap wald test \n')
     B =bWald_list$B
     useref = ifelse(is.null(bWald_list$useref),
-                    T,bWald_list$useref)
+                    TRUE,bWald_list$useref)
     par_b = sapply(1:B,function(b){
-      resample = sample(1:n_sample,n_sample,replace = T)
+      resample = sample(1:n_sample,n_sample,replace = TRUE)
       Wb = W[resample]
       Mb = M[resample]
       if(d!=0){Xb = X[resample,]}
       if(d_star!=0){X_starb = X_star[resample,]}
-      if(useref==T){
+      if(useref==TRUE){
         init = res$res$par
       } else {init = NULL}
       res_b = ZIPG_main_EM(W = Wb,M = Mb,X = Xb,X_star = X_starb,
                            optim_method='BFGS',
                            init = init,
-                           return_model=F,ref_init = res$res$par)
+                           return_model=FALSE,ref_init = res$res$par)
       return(c(res_b$res$par,res_b$wald_test$SE))
     })
-    cat('Finish \n')
+    message('Finish \n')
     n_parms = length(res$res$par)
     par_SE =  t(par_b)[,-c(1:n_parms)]
     par_b = t(par_b)[,1:n_parms]
@@ -80,7 +80,7 @@ ZIPG_main <- function(data,W,M,X,X_star,
     n_parms = length(res$res$par)
     SE = sqrt(diag(varb))
     twald = res$res$par^2/diag(varb)
-    pval = stats::pchisq(twald,df=1,lower.tail = F)
+    pval = stats::pchisq(twald,df=1,lower.tail = FALSE)
 
     res$bWald = list(
       B = B,
@@ -94,7 +94,7 @@ ZIPG_main <- function(data,W,M,X,X_star,
   }
 
   if(!is.null(pbWald_list)){
-    cat('Running parametric bootstrap wald test \n')
+    message('Running parametric bootstrap wald test \n')
 
     fX0 = pbWald_list$X0
     fX_star0 = pbWald_list$X_star0
@@ -125,17 +125,17 @@ ZIPG_main <- function(data,W,M,X,X_star,
     H0_index = which(c(fX_index,fX_star_index)==FALSE)
 
     useref = ifelse(is.null(bWald_list$useref),
-                    T,bWald_list$useref)
+                    TRUE,bWald_list$useref)
 
 
     res0 = ZIPG_main_EM(W,M,X0,X_star0,
                         optim_method='BFGS',
-                        init = NULL,return_model = F)
+                        init = NULL,return_model = FALSE)
 
     LRTdf = d+d_star-(d0+d_star0)
     res$res0 = res0
     LR = 2*(res$logli- res0$logli)
-    pval_LRT = stats::pchisq(LR,df =  LRTdf,lower.tail = F)
+    pval_LRT = stats::pchisq(LR,df =  LRTdf,lower.tail = FALSE)
     res$LRT  = list(LR = LR,pval =pval_LRT)
 
     if(!is.null(pbWald_list$B)){
@@ -148,11 +148,11 @@ ZIPG_main <- function(data,W,M,X,X_star,
       W_sim = ZIPG_simulate(M,X0,X_star0,
                             A=1,d0,d_star0,
                             res0$res$par,N=B,
-                            zi = T,returnU = F)$W_list
+                            zi = TRUE,returnU = FALSE)$W_list
       par_b = c()
       TLRT_b = c()
       TWald_b = c()
-      if(useref==T){
+      if(useref==TRUE){
         init = res$res$par
         init0 = res$res$par[-H0_index]
       } else {
@@ -165,7 +165,7 @@ ZIPG_main <- function(data,W,M,X,X_star,
         res_b = ZIPG_main_EM(Wb,M,X,X_star,
                              optim_method='BFGS',
                              init =init,
-                             return_model=F,
+                             return_model=FALSE,
                              ref_init = res$res$par)
 
         if(length(H0_index)==1){
@@ -176,7 +176,7 @@ ZIPG_main <- function(data,W,M,X,X_star,
         }
 
       }
-      cat('Finish \n')
+      message('Finish \n')
 
       pbWald = (1+sum(TWald_b>=TWald0))/(1+B)
       res$pbWald = list(
@@ -403,14 +403,14 @@ ZIPG_simulate <- function(M,X,X_star,
                          n,A)
     W_simulate_i = matrix(stats::rpois(n*A,lambda*U_simulate_i),n,A)
 
-    if(zi==T){
-      zero_sim = matrix(stats::rbinom(n*A,size = 1 ,prob = p_0),n,A,byrow = T)
+    if(zi==TRUE){
+      zero_sim = matrix(stats::rbinom(n*A,size = 1 ,prob = p_0),n,A,byrow = TRUE)
       W_simulate_i = W_simulate_i*(zero_sim==0)
     }
     W_list[[i]] = W_simulate_i
     U_list[[i]] = U_simulate_i
   }
-  if(returnU==T){
+  if(returnU==TRUE){
     return(list(
       W_list = W_list,
       U_list = U_list,

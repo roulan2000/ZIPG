@@ -1,12 +1,15 @@
 Package: ZIPG
 Type: Package
-Title: Zero-Inflated Poisson-Gamma (ZIPG) Regression
+Title: Zero-Inflated Poisson-Gamma Regression
 Version: 1.0
+Authors@R: c(person("Roulan", "Jiang", role = c("aut", "cre"),email = "roulan2000@gmail.com"),
+             person("Tianying", "Wang", role = "aut",email = "tianyingw0905@outlook.com"))
 Author: Roulan Jiang, Tianying Wang
 Maintainer: Roulan Jiang <roulan2000@gmail.com>
-Description: We provide a flexible Zero-inflated Poisson-Gamma Model (ZIPG) by connecting both the mean abundance and the variability to different covariates, and build valid statistical inference procedures for both parameter estimation and hypothesis testing. These functions can be used to analyze microbiome count data with zero-inflation and overdispersion. 
+Description: We provide a flexible Zero-inflated Poisson-Gamma Model (ZIPG) by connecting both the mean abundance and the variability to different covariates, and build valid statistical inference procedures for both parameter estimation and hypothesis testing. These functions can be used to analyze microbiome count data with zero-inflation and overdispersion. The model is discussed in Jiang et al (2023) <doi:10.1080/01621459.2022.2151447>.
 License: GPL (>= 2)
 URL: https://github.com/roulan2000/ZIPG
+BugReports: https://github.com/roulan2000/ZIPG/issues
 Encoding: UTF-8
 LazyData: true
 Depends: 
@@ -15,5 +18,4 @@ RoxygenNote: 7.2.1
 Imports: 
     optimr,
     pscl,
-    MASS,
-    stats
+    MASS
